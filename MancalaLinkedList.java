@@ -1,39 +1,38 @@
 import java.util.HashMap;
 
-/*
+/**
  * MancalaLinkedList uses a circular linked list to represent the game board.
  */
 public class MancalaLinkedList {
-    private HashMap<String, Node> nodes; //map to easily access nodes
-    private Node boardStart; //"starting" node for the linked list
+    private HashMap<BoardSpace, Node> nodes; //maps an enum representing the board spaces to their actual node objects
+    private Node currentNode; //current board space selected
 
     public MancalaLinkedList() {
-        this.nodes = new HashMap<String, Node>();
-        this.boardStart = null;
+        this.nodes = new HashMap<BoardSpace, Node>();
         initializeBoard();
     }
 
-    /* 
+    /** 
      * Initializes the game board. More specifically, it creates 12 pits with 4 stones each and 2 empty mancalas, and links them together to form the board.
      */
     public void initializeBoard() {
         //each pit starts with 4 stones
-        Node a1 = new Node("a1", 4);
-        Node a2 = new Node("a2", 4);
-        Node a3 = new Node("a3", 4);
-        Node a4 = new Node("a4", 4);
-        Node a5 = new Node("a5", 4);
-        Node a6 = new Node("a6", 4);
-        Node b1 = new Node("b1", 4);
-        Node b2 = new Node("b2", 4);
-        Node b3 = new Node("b3", 4);
-        Node b4 = new Node("b4", 4);
-        Node b5 = new Node("b5", 4);
-        Node b6 = new Node("b6", 4);
+        Node a1 = new Node(BoardSpace.A1, 4);
+        Node a2 = new Node(BoardSpace.A2, 4);
+        Node a3 = new Node(BoardSpace.A3, 4);
+        Node a4 = new Node(BoardSpace.A4, 4);
+        Node a5 = new Node(BoardSpace.A5, 4);
+        Node a6 = new Node(BoardSpace.A6, 4);
+        Node b1 = new Node(BoardSpace.B1, 4);
+        Node b2 = new Node(BoardSpace.B2, 4);
+        Node b3 = new Node(BoardSpace.B3, 4);
+        Node b4 = new Node(BoardSpace.B4, 4);
+        Node b5 = new Node(BoardSpace.B5, 4);
+        Node b6 = new Node(BoardSpace.B6, 4);
 
         //each mancala starts with 0 stones
-        Node aM = new Node("aM", 0);
-        Node bM = new Node("bM", 0);
+        Node aM = new Node(BoardSpace.AM, 0);
+        Node bM = new Node(BoardSpace.BM, 0);
 
 
         //link together the board
@@ -52,7 +51,7 @@ public class MancalaLinkedList {
         b6.setNext(bM);
         bM.setNext(a1);
 
-        //set opposites
+        //set opposites for pits only, mancalas have 'null' opposites
         a1.setOpposite(b6);
         a2.setOpposite(b5);
         a3.setOpposite(b4);
@@ -67,38 +66,93 @@ public class MancalaLinkedList {
         b2.setOpposite(a5);
         b1.setOpposite(a6);
 
-        //set a1 as the starting node
-        this.boardStart = a1;
-
         //add nodes to map
         nodes.clear();
-        nodes.put(a1.getName(), a1);
-        nodes.put(a2.getName(), a2);
-        nodes.put(a3.getName(), a3);
-        nodes.put(a4.getName(), a4);
-        nodes.put(a5.getName(), a5);
-        nodes.put(a6.getName(), a6);
-        nodes.put(b1.getName(), b1);
-        nodes.put(b2.getName(), b2);
-        nodes.put(b3.getName(), b3);
-        nodes.put(b4.getName(), b4);
-        nodes.put(b5.getName(), b5);
-        nodes.put(b6.getName(), b6);
-        nodes.put(aM.getName(), aM);
-        nodes.put(bM.getName(), bM);
+        nodes.put(a1.getBoardSpace(), a1);
+        nodes.put(a2.getBoardSpace(), a2);
+        nodes.put(a3.getBoardSpace(), a3);
+        nodes.put(a4.getBoardSpace(), a4);
+        nodes.put(a5.getBoardSpace(), a5);
+        nodes.put(a6.getBoardSpace(), a6);
+        nodes.put(b1.getBoardSpace(), b1);
+        nodes.put(b2.getBoardSpace(), b2);
+        nodes.put(b3.getBoardSpace(), b3);
+        nodes.put(b4.getBoardSpace(), b4);
+        nodes.put(b5.getBoardSpace(), b5);
+        nodes.put(b6.getBoardSpace(), b6);
+        nodes.put(aM.getBoardSpace(), aM);
+        nodes.put(bM.getBoardSpace(), bM);
+
+        //set the currently selected node to null (nothing selected yet)
+        this.currentNode = null;
     }
- 
-    /*
+
+    /**
+     * Sets the currently selected node to the input.
+     * Precondition: none
+     * Postcondition: The current node is set to the input.
+     * 
+     * @param newSpace board space to be set as the new current node.
+     * @exception IllegalStateException the input space was not linked to a node during board initialization
+     */
+    public void setCurrentNode(BoardSpace newSpace) {
+        Node newNode = nodes.get(newSpace);
+        if (newNode == null) {
+            throw new IllegalStateException("Error: input board space does not correspond to a node on the board.");
+        }
+        this.currentNode = newNode;
+    }
+
+    /**
+     * Moves to the next node on the board.
+     * Precondition: The current node is already set (not null).
+     * Postcondition: The current node is changed to the next node.
+     * 
+     * @exception IllegalStateException if the current node is not set (if the current node is null)
+     */
+    public void moveToNextNode() {
+        if (this.currentNode == null) {
+            throw new IllegalStateException("Error: current node is not set.");
+        }
+
+        this.currentNode = this.currentNode.getNext();
+    }
+
+    /**
+     * Changes the stone count of the current node. Will subtract if the input is negative.
+     * Precondition: The current node is already set (not null). The input change will not make the stone count in the board space negative.
+     * Postcondition: The current node's stone count is changed by the given amount.
+     * 
+     * @param delta change amount
+     * @exception IllegalStateException if the current node is not set (if the current node is null)
+     * @exception IllegalArgumentException if the input changes the stone count to a negative number
+     */
+    public void changeStonesOfCurrentNode(int delta) {
+        if (this.currentNode == null) {
+            throw new IllegalStateException("Error: current node is not set.");
+        }
+
+        int currentStones = this.currentNode.getStones();
+        int newStones = delta + currentStones;
+        if (newStones < 0) {
+            throw new IllegalArgumentException("Error: cannot change the stones in a board space to a negative number. Attempted to set the count to " + newStones + ".");
+        }
+
+        this.currentNode.setStones(newStones);
+    }
+
+
+    /**
      * A Node represents a pit or mancala on the board
      */
     private class Node {
-        private String name; //name of the pit
-        private Node opposite; //pit adjacent to this node (for the 'steal' rule)
+        private BoardSpace boardSpace; //enum representing this board space
+        private Node opposite; //only applicable to nodes representing pits (for the 'steal' rule): pit adjacent to this pit, null for mancalas
         private Node next; //next node to be visited
-        private int stones; //number of stones currently in this pit
+        private int stones; //number of stones currently in this space
 
-        public Node(String name, int stones) {
-            this.name = name;
+        public Node(BoardSpace boardSpace, int stones) {
+            this.boardSpace = boardSpace;
             this.stones = stones;
             this.opposite = null;
             this.next = null;
@@ -128,8 +182,8 @@ public class MancalaLinkedList {
             return this.next;
         }
 
-        public String getName() {
-            return this.name;
+        public BoardSpace getBoardSpace() {
+            return this.boardSpace;
         }
     }
 }
