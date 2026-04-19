@@ -117,6 +117,38 @@ public class MancalaLinkedList {
 
         this.currentNode = this.currentNode.getNext();
     }
+    /**
+     * Simulates the game process when the player start a move on the given boardspace.
+     * Returns true if it allows the user to make another move. 
+     * Precondition: The player chose the valid boardspace and side.
+     * Postcondition: Board is updated.
+     */
+    public boolean startMoveOn(BoardSpace space, boolean side) {
+        BoardSpace myMancala = side ? BoardSpace.BM : BoardSpace.AM;
+        setCurrentNode(space);
+        int totalStones = currentNode.getStones();
+        changeStonesOfCurrentNode(-totalStones);
+        while (totalStones > 0) {
+            moveToNextNode();
+            changeStonesOfCurrentNode(1);
+            totalStones--;
+        }
+        if(currentNode.getBoardSpace() == myMancala) {
+            return true;
+        }
+
+        if(currentNode.getStones() == 1) {
+            Node oppositeNode = currentNode.getOpposite();
+            Node mancalaNode = nodes.get(myMancala);
+            int oppositeStone = oppositeNode.getStones();
+            int total = oppositeStone + currentNode.getStones();
+            oppositeNode.setStones(0);
+            currentNode.setStones(0);
+            mancalaNode.setStones(mancalaNode.getStones() + total);
+        }
+
+        return false;
+    }
 
     /**
      * Changes the stone count of the current node. Will subtract if the input is negative.
