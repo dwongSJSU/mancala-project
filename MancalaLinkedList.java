@@ -151,6 +151,57 @@ public class MancalaLinkedList {
     }
 
     /**
+     * Returns true if either side's pits are all empty, signaling game over.
+     */
+    public boolean isGameOver() {
+        boolean aSideEmpty = getStoneCount(BoardSpace.A1) == 0 &&
+                             getStoneCount(BoardSpace.A2) == 0 &&
+                             getStoneCount(BoardSpace.A3) == 0 &&
+                             getStoneCount(BoardSpace.A4) == 0 &&
+                             getStoneCount(BoardSpace.A5) == 0 &&
+                             getStoneCount(BoardSpace.A6) == 0;
+        boolean bSideEmpty = getStoneCount(BoardSpace.B1) == 0 &&
+                             getStoneCount(BoardSpace.B2) == 0 &&
+                             getStoneCount(BoardSpace.B3) == 0 &&
+                             getStoneCount(BoardSpace.B4) == 0 &&
+                             getStoneCount(BoardSpace.B5) == 0 &&
+                             getStoneCount(BoardSpace.B6) == 0;
+        return aSideEmpty || bSideEmpty;
+    }
+
+    /**
+     * Sweeps all remaining pit stones into their respective mancalas.
+     * Called once isGameOver() returns true.
+     */
+    public void sweepRemainingStones() {
+        BoardSpace[] aPits = {BoardSpace.A1, BoardSpace.A2, BoardSpace.A3, BoardSpace.A4, BoardSpace.A5, BoardSpace.A6};
+        BoardSpace[] bPits = {BoardSpace.B1, BoardSpace.B2, BoardSpace.B3, BoardSpace.B4, BoardSpace.B5, BoardSpace.B6};
+
+        for (BoardSpace pit : aPits) {
+            Node node = nodes.get(pit);
+            nodes.get(BoardSpace.AM).setStones(nodes.get(BoardSpace.AM).getStones() + node.getStones());
+            node.setStones(0);
+        }
+        for (BoardSpace pit : bPits) {
+            Node node = nodes.get(pit);
+            nodes.get(BoardSpace.BM).setStones(nodes.get(BoardSpace.BM).getStones() + node.getStones());
+            node.setStones(0);
+        }
+    }
+
+    /**
+     * Returns the number of stones in the given board space.
+     * Precondition: none
+     * Postcondition: none (read-only)
+     *
+     * @param space the board space to query
+     * @return the number of stones in that space
+     */
+    public int getStoneCount(BoardSpace space) {
+        return nodes.get(space).getStones();
+    }
+
+    /**
      * Changes the stone count of the current node. Will subtract if the input is negative.
      * Precondition: The current node is already set (not null). The input change will not make the stone count in the board space negative.
      * Postcondition: The current node's stone count is changed by the given amount.
