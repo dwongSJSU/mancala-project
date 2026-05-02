@@ -2,40 +2,47 @@ import java.awt.*;
 import javax.swing.*;
 
 /**
- * PitComponent is the JComponent used by the application to draw a pit.
+ * PitComponent is the JComponent used by the application to draw a pit (of size 100x100) with either a square or circular border.
  */
 public class PitComponent extends JPanel {
     private final int PREFERRED_SIZE = 100;
 
-    private PitShape pit;
+    private StoneRenderer stones;
+    private BorderShape border;
     private Color color = Color.BLACK;
 
+    /**
+     * Default PitComponent Constructor. Creates a PitComponent with a circular border, and provides a default offset to keep the stones in the circle border.
+     */
     public PitComponent() {
-        this.pit = new PitShape();
-        this.setPreferredSize(new Dimension(PREFERRED_SIZE, PREFERRED_SIZE));
+        this.stones = new EllipseStoneRenderer(0, 10, 10);
+        this.border = new CircleBorder();
+        setPreferredSize(new Dimension(PREFERRED_SIZE, PREFERRED_SIZE));
     }
 
-    public PitComponent(int numStones) {
-        this.pit = new PitShape(numStones);
-        this.setPreferredSize(new Dimension(PREFERRED_SIZE, PREFERRED_SIZE));
+    public PitComponent(StoneRenderer stones, BorderShape border) {
+        this.stones = stones;
+        this.border = border;
+        setPreferredSize(new Dimension(PREFERRED_SIZE, PREFERRED_SIZE));
     }
 
-    public PitComponent(int numStones, Color color) {
-        this(numStones);
+    public void setColor(Color color) {
         this.color = color;
     }
 
-    public void paintComponent(Graphics g) {
+    @Override
+    protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        Graphics2D g2 = (Graphics2D)g;
-
+        Graphics2D g2 = (Graphics2D) g;
         g2.setColor(color);
-        pit.draw(g2);
+
+        stones.draw(g2, getWidth(), getHeight());
+        border.draw(g2, getWidth(), getHeight(), color);
     }
 
     public void updateCount(int numStones) {
-        this.pit = new PitShape(numStones);
+        stones.setStoneCount(numStones);
         repaint();
     }
 }

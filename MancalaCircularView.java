@@ -3,10 +3,10 @@ import java.awt.event.*;
 import javax.swing.*;
 
 /**
- * MancalaDefaultView is one strategy to display the GUI for the game.
- * It provides the most basic GUI for the game and only uses black and white coloring.
+ * MancalaCircularView is one strategy to display the GUI for the game.
+ * 
  */
-public class MancalaDefaultView extends JFrame implements ViewStrategy {
+public class MancalaCircularView extends JFrame implements ViewStrategy {
     private final int FRAME_SIZE = 1000;
 
     private MancalaLinkedList model;
@@ -30,55 +30,45 @@ public class MancalaDefaultView extends JFrame implements ViewStrategy {
     private PitComponent b5 = new PitComponent();
     private PitComponent b6 = new PitComponent();
 
-    private MancalaComponent aM = new MancalaComponent();
-    private MancalaComponent bM = new MancalaComponent();
+    private PitComponent aM = new PitComponent(new RectangleStoneRenderer(0), new SquareBorder());
+    private PitComponent bM = new PitComponent(new RectangleStoneRenderer(0), new SquareBorder());
 
     private JLabel turnLabel = new JLabel("Player A's Turn", SwingConstants.CENTER);
     //end of GUI Components
 
-    public MancalaDefaultView() {
+    public MancalaCircularView() {
         //set size of window
         this.setSize(FRAME_SIZE, FRAME_SIZE);
         this.setLayout(new BorderLayout());
-        
-        JPanel board = new JPanel(new BorderLayout());
 
-        //create top and bottom "rows" for A1-6 (bottom row) and B1-6 (top row)
-        JPanel topRow = new JPanel();
-        topRow.setLayout(new BoxLayout(topRow, BoxLayout.X_AXIS));
-        JPanel bottomRow = new JPanel();
-        bottomRow.setLayout(new BoxLayout(bottomRow, BoxLayout.X_AXIS));
+        //create rows to hold the pits
+        JPanel rowContainer = new JPanel();
+        rowContainer.setLayout(new GridLayout(7, 6));
+        rowContainer.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        //add six pits to each row
-        bottomRow.add(a1);
-        bottomRow.add(a2);
-        bottomRow.add(a3);
-        bottomRow.add(a4);
-        bottomRow.add(a5);
-        bottomRow.add(a6);
-        // top row has to be added in reverse order due to the linked list binding. 
-        // game continues counterclockwise.
-        topRow.add(b6);
-        topRow.add(b5);
-        topRow.add(b4);
-        topRow.add(b3);
-        topRow.add(b2);
-        topRow.add(b1);
+        //top row
+        rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(b4); rowContainer.add(b3); rowContainer.add(blank()); rowContainer.add(blank());
 
-        //add the rows to the board
-        JPanel pits = new JPanel();
-        pits.setLayout(new BorderLayout());
-        pits.add(bottomRow, BorderLayout.SOUTH);
-        pits.add(topRow, BorderLayout.NORTH);
-        board.add(pits, BorderLayout.CENTER);
+        //second row
+        rowContainer.add(blank()); rowContainer.add(b5); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(b2); rowContainer.add(blank());
 
-        //add mancalas to the sides of the board
-        board.add(aM, BorderLayout.EAST);
-        board.add(bM, BorderLayout.WEST);
+        //third row
+        rowContainer.add(b6); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(b1);
 
-        //add board to the window
-        board.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        this.add(board);
+        //mancala row
+        rowContainer.add(bM); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(aM);
+
+        //fifth row
+        rowContainer.add(a1); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(a6);
+
+        //sixth row
+        rowContainer.add(blank()); rowContainer.add(a2); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(a5); rowContainer.add(blank());
+
+        //bottom row
+        rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(a3); rowContainer.add(a4); rowContainer.add(blank()); rowContainer.add(blank());
+
+        //add the rows to the window
+        this.add(rowContainer, BorderLayout.CENTER);
 
         //add turn indicator at the bottom
         turnLabel.setFont(turnLabel.getFont().deriveFont(Font.BOLD, 18f));
@@ -98,6 +88,15 @@ public class MancalaDefaultView extends JFrame implements ViewStrategy {
         addPitListener(b4, BoardSpace.B4, true);
         addPitListener(b5, BoardSpace.B5, true);
         addPitListener(b6, BoardSpace.B6, true);
+    }
+
+    /**
+     * Factory method to create an invisible pit (for spacing)
+     * 
+     * @return new BlankComponent object
+    */
+    private BlankComponent blank() {
+        return new BlankComponent();
     }
 
     /**

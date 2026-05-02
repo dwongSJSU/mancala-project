@@ -1,0 +1,52 @@
+import java.awt.*;
+import java.awt.geom.Ellipse2D;
+
+/**
+ * RectangleStoneRenderer is a StoneRenderer that draws the stones in a grid, and resizes the stones to fit the rectangle border.
+ */
+public class RectangleStoneRenderer implements StoneRenderer {
+    private int numStones;
+
+    public RectangleStoneRenderer(int numStones) {
+        this.numStones = numStones;
+    }
+
+    @Override
+    public void setStoneCount(int numStones) {
+        this.numStones = numStones;
+    }
+
+    @Override
+    public void draw(Graphics2D g2, int width, int height) {
+        if (numStones <= 0) return;
+
+        // adapt grid to rectangle shape
+        int numCols = (int) Math.ceil(Math.sqrt(numStones * (width / (double) height)));
+        int numRows = (int) Math.ceil((double) numStones / numCols);
+
+        int stoneSize = Math.min(width / numCols, height / numRows) - 4;
+
+        int gridWidth = numCols * stoneSize;
+        int gridHeight = numRows * stoneSize;
+
+        int offsetX = (width - gridWidth) / 2;
+        int offsetY = (height - gridHeight) / 2;
+
+        int stonesDrawn = 0;
+
+        for (int row = 0; row < numRows; row++) {
+            for (int col = 0; col < numCols; col++) {
+
+                if (stonesDrawn >= numStones) return;
+
+                int x = offsetX + col * stoneSize;
+                int y = offsetY + row * stoneSize;
+
+                g2.fill(new Ellipse2D.Double(x, y, stoneSize, stoneSize));
+                g2.draw(new Ellipse2D.Double(x, y, stoneSize, stoneSize));
+
+                stonesDrawn++;
+            }
+        }
+    }
+}
