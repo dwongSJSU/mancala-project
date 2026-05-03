@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * MancalaLinkedList uses a circular linked list to represent the game board.
@@ -136,6 +137,26 @@ public class MancalaLinkedList {
             Node node = nodes.get(pit);
             nodes.get(BoardSpace.BM).setStones(nodes.get(BoardSpace.BM).getStones() + node.getStones());
             node.setStones(0);
+        }
+    }
+
+    /**
+     * Returns a snapshot of the current stone counts for every board space.
+     */
+    public HashMap<BoardSpace, Integer> getSnapshot() {
+        HashMap<BoardSpace, Integer> snapshot = new HashMap<>();
+        for (Map.Entry<BoardSpace, Node> entry : nodes.entrySet()) {
+            snapshot.put(entry.getKey(), entry.getValue().getStones());
+        }
+        return snapshot;
+    }
+
+    /**
+     * Restores stone counts from a previously taken snapshot.
+     */
+    public void restoreSnapshot(HashMap<BoardSpace, Integer> snapshot) {
+        for (Map.Entry<BoardSpace, Integer> entry : snapshot.entrySet()) {
+            nodes.get(entry.getKey()).setStones(entry.getValue());
         }
     }
 
