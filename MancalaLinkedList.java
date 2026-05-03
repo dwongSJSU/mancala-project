@@ -6,8 +6,12 @@ import java.util.HashMap;
 public class MancalaLinkedList {
     private HashMap<BoardSpace, Node> nodes; //maps an enum representing the board spaces to their actual node objects
     private Node currentNode; //current board space selected
+    private int defaultStoneInPit;
+    public static BoardSpace[] aPits = {BoardSpace.A1, BoardSpace.A2, BoardSpace.A3, BoardSpace.A4, BoardSpace.A5, BoardSpace.A6, BoardSpace.AM};
+    public static BoardSpace[] bPits = {BoardSpace.B1, BoardSpace.B2, BoardSpace.B3, BoardSpace.B4, BoardSpace.B5, BoardSpace.B6, BoardSpace.BM};
 
     public MancalaLinkedList() {
+        defaultStoneInPit = 4;
         this.nodes = new HashMap<BoardSpace, Node>();
         initializeBoard();
     }
@@ -16,73 +20,30 @@ public class MancalaLinkedList {
      * Initializes the game board. More specifically, it creates 12 pits with 4 stones each and 2 empty mancalas, and links them together to form the board.
      */
     public void initializeBoard() {
-        //each pit starts with 4 stones
-        Node a1 = new Node(BoardSpace.A1, 4);
-        Node a2 = new Node(BoardSpace.A2, 4);
-        Node a3 = new Node(BoardSpace.A3, 4);
-        Node a4 = new Node(BoardSpace.A4, 4);
-        Node a5 = new Node(BoardSpace.A5, 4);
-        Node a6 = new Node(BoardSpace.A6, 4);
-        Node b1 = new Node(BoardSpace.B1, 4);
-        Node b2 = new Node(BoardSpace.B2, 4);
-        Node b3 = new Node(BoardSpace.B3, 4);
-        Node b4 = new Node(BoardSpace.B4, 4);
-        Node b5 = new Node(BoardSpace.B5, 4);
-        Node b6 = new Node(BoardSpace.B6, 4);
-
-        //each mancala starts with 0 stones
-        Node aM = new Node(BoardSpace.AM, 0);
-        Node bM = new Node(BoardSpace.BM, 0);
-
-
-        //link together the board
-        a1.setNext(a2);
-        a2.setNext(a3);
-        a3.setNext(a4);
-        a4.setNext(a5);
-        a5.setNext(a6);
-        a6.setNext(aM);
-        aM.setNext(b1);
-        b1.setNext(b2);
-        b2.setNext(b3);
-        b3.setNext(b4);
-        b4.setNext(b5);
-        b5.setNext(b6);
-        b6.setNext(bM);
-        bM.setNext(a1);
-
-        //set opposites for pits only, mancalas have 'null' opposites
-        a1.setOpposite(b6);
-        a2.setOpposite(b5);
-        a3.setOpposite(b4);
-        a4.setOpposite(b3);
-        a5.setOpposite(b2);
-        a6.setOpposite(b1);
-
-        b6.setOpposite(a1);
-        b5.setOpposite(a2);
-        b4.setOpposite(a3);
-        b3.setOpposite(a4);
-        b2.setOpposite(a5);
-        b1.setOpposite(a6);
-
-        //add nodes to map
         nodes.clear();
-        nodes.put(a1.getBoardSpace(), a1);
-        nodes.put(a2.getBoardSpace(), a2);
-        nodes.put(a3.getBoardSpace(), a3);
-        nodes.put(a4.getBoardSpace(), a4);
-        nodes.put(a5.getBoardSpace(), a5);
-        nodes.put(a6.getBoardSpace(), a6);
-        nodes.put(b1.getBoardSpace(), b1);
-        nodes.put(b2.getBoardSpace(), b2);
-        nodes.put(b3.getBoardSpace(), b3);
-        nodes.put(b4.getBoardSpace(), b4);
-        nodes.put(b5.getBoardSpace(), b5);
-        nodes.put(b6.getBoardSpace(), b6);
-        nodes.put(aM.getBoardSpace(), aM);
-        nodes.put(bM.getBoardSpace(), bM);
+        int n = aPits.length;
+        Node[] aNodes = new Node[n];
+        Node[] bNodes = new Node[n];
 
+        // create and add nodes to the map.
+        for(int i = 0; i < n; i++) {
+            aNodes[i] = new Node(aPits[i], (i < n - 1 ? defaultStoneInPit : 0));
+            bNodes[i] = new Node(bPits[i], (i < n - 1 ? defaultStoneInPit : 0));
+            nodes.put(aPits[i], aNodes[i]);
+            nodes.put(bPits[i], bNodes[i]);
+        }
+
+        // link them together.
+        for(int i = 0; i < n - 1; i++) {
+            aNodes[i].setNext(aNodes[i + 1]);
+            bNodes[i].setNext(bNodes[i + 1]);
+            aNodes[i].setOpposite(bNodes[n - 2 - i]);
+            bNodes[i].setOpposite(aNodes[n - 2 - i]);
+        }
+        // A mancala's next is B6.
+        aNodes[n - 1].setNext(bNodes[0]);
+        // B mancala's next is A1
+        bNodes[n - 1].setNext(aNodes[0]);
         //set the currently selected node to null (nothing selected yet)
         this.currentNode = null;
     }
@@ -154,19 +115,11 @@ public class MancalaLinkedList {
      * Returns true if either side's pits are all empty, signaling game over.
      */
     public boolean isGameOver() {
-        boolean aSideEmpty = getStoneCount(BoardSpace.A1) == 0 &&
-                             getStoneCount(BoardSpace.A2) == 0 &&
-                             getStoneCount(BoardSpace.A3) == 0 &&
-                             getStoneCount(BoardSpace.A4) == 0 &&
-                             getStoneCount(BoardSpace.A5) == 0 &&
-                             getStoneCount(BoardSpace.A6) == 0;
-        boolean bSideEmpty = getStoneCount(BoardSpace.B1) == 0 &&
-                             getStoneCount(BoardSpace.B2) == 0 &&
-                             getStoneCount(BoardSpace.B3) == 0 &&
-                             getStoneCount(BoardSpace.B4) == 0 &&
-                             getStoneCount(BoardSpace.B5) == 0 &&
-                             getStoneCount(BoardSpace.B6) == 0;
-        return aSideEmpty || bSideEmpty;
+        int totalStonesInGame = 0;
+        for(int i = 0; i < aPits.length - 1; i++) {
+            totalStonesInGame += getStoneCount(aPits[i]) + getStoneCount(bPits[i]);
+        }
+        return totalStonesInGame == 0;
     }
 
     /**
@@ -174,9 +127,6 @@ public class MancalaLinkedList {
      * Called once isGameOver() returns true.
      */
     public void sweepRemainingStones() {
-        BoardSpace[] aPits = {BoardSpace.A1, BoardSpace.A2, BoardSpace.A3, BoardSpace.A4, BoardSpace.A5, BoardSpace.A6};
-        BoardSpace[] bPits = {BoardSpace.B1, BoardSpace.B2, BoardSpace.B3, BoardSpace.B4, BoardSpace.B5, BoardSpace.B6};
-
         for (BoardSpace pit : aPits) {
             Node node = nodes.get(pit);
             nodes.get(BoardSpace.AM).setStones(nodes.get(BoardSpace.AM).getStones() + node.getStones());
