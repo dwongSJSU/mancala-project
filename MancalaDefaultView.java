@@ -1,5 +1,8 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashMap;
 import javax.swing.*;
 
 /**
@@ -15,7 +18,18 @@ public class MancalaDefaultView extends JFrame implements ViewStrategy {
     private boolean currentSide = false;
     private boolean gameOver = false;
 
+    private static final int MAX_UNDOS = 3;
+    private record BoardState(HashMap<BoardSpace, Integer> stones, boolean side) {}
+    private final Deque<BoardState> undoStack = new ArrayDeque<>();
+    private int[] undosLeft = {MAX_UNDOS, MAX_UNDOS}; // [A, B]
+    private JButton undoButton = new JButton("Undo (A: 3, B: 3)");
+
+    
     //start of GUI Components
+    // later refactor it into array. 
+    // private PitComponent[] aComponents = new PitComponent[6];
+    // private PitComponent[] bComponents = new PitComponent[6];
+    
     private PitComponent a1 = new PitComponent();
     private PitComponent a2 = new PitComponent();
     private PitComponent a3 = new PitComponent();
@@ -80,9 +94,26 @@ public class MancalaDefaultView extends JFrame implements ViewStrategy {
         board.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         this.add(board);
 
-        //add turn indicator at the bottom
+        //add turn indicator and undo button at the bottom
         turnLabel.setFont(turnLabel.getFont().deriveFont(Font.BOLD, 18f));
-        this.add(turnLabel, BorderLayout.SOUTH);
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.add(turnLabel, BorderLayout.CENTER);
+        bottomPanel.add(undoButton, BorderLayout.EAST);
+        this.add(bottomPanel, BorderLayout.SOUTH);
+
+        undoButton.addActionListener(e -> {
+            if (undoStack.isEmpty() || gameOver) return;
+            int playerIndex = currentSide ? 1 : 0;
+            if (undosLeft[playerIndex] == 0) {
+                JOptionPane.showMessageDialog(this, (currentSide ? "Player B" : "Player A") + " has no undos left.", "Undo Unavailable", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            undosLeft[playerIndex]--;
+            BoardState prev = undoStack.pop();
+            model.restoreSnapshot(prev.stones());
+            currentSide = prev.side();
+            stateChanged();
+        });
 
         // wire up click listeners for every pit
         addPitListener(a1, BoardSpace.A1, false);
@@ -113,18 +144,21 @@ public class MancalaDefaultView extends JFrame implements ViewStrategy {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (gameOver) return;
-
+                
                 // ignore clicks if it's not this pit's player's turn
                 if (currentSide != pitSide) return;
-
+                
                 // ignore clicks on empty pits
                 if (model.getStoneCount(space) == 0) return;
-
+                
+                undoButton.setEnabled(!undoStack.isEmpty());
+                undoStack.push(new BoardState(model.getSnapshot(), currentSide));
                 boolean extraTurn = model.startMoveOn(space, currentSide);
 
                 // switch sides only if no extra turn was earned
                 if (!extraTurn) {
                     currentSide = !currentSide;
+                    undoButton.setEnabled(false);
                 }
 
                 if (model.isGameOver()) {
@@ -167,6 +201,7 @@ public class MancalaDefaultView extends JFrame implements ViewStrategy {
         aM.updateCount(model.getStoneCount(BoardSpace.AM));
         bM.updateCount(model.getStoneCount(BoardSpace.BM));
 
+        undoButton.setText("Undo (A: " + undosLeft[0] + ", B: " + undosLeft[1] + ")");
         if (gameOver) {
             turnLabel.setText("Game Over");
         } else {
