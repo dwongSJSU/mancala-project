@@ -14,6 +14,7 @@ public class MancalaComponent extends JPanel {
 
     public MancalaComponent() {
         this(new RectangleStoneRenderer(0), new SquareBorder());
+        setPreferredSize(new Dimension(PREFERRED_WIDTH, PREFERRED_HEIGHT));
     }
 
     public MancalaComponent(StoneRenderer stones, BorderShape border) {
