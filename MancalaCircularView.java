@@ -50,25 +50,25 @@ public class MancalaCircularView extends JFrame implements ViewStrategy {
         rowContainer.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         //top row
-        rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(b4); rowContainer.add(b3); rowContainer.add(blank()); rowContainer.add(blank());
+        rowContainer.add(blank()); rowContainer.add(new LabelComponent("B4", 1)); rowContainer.add(b4); rowContainer.add(b3); rowContainer.add(new LabelComponent("B3", 3)); rowContainer.add(blank());
 
         //second row
-        rowContainer.add(blank()); rowContainer.add(b5); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(b2); rowContainer.add(blank());
+        rowContainer.add(new LabelComponent("B5", 1)); rowContainer.add(b5); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(b2); rowContainer.add(new LabelComponent("B2", 3));
 
         //third row
-        rowContainer.add(b6); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(b1);
+        rowContainer.add(b6); rowContainer.add(new LabelComponent("B6")); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(new LabelComponent("B1")); rowContainer.add(b1);
 
         //mancala row
-        rowContainer.add(bM); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(aM);
+        rowContainer.add(bM); rowContainer.add(new LabelComponent("BM", 3)); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(new LabelComponent("AM", 1)); rowContainer.add(aM);
 
         //fifth row
-        rowContainer.add(a1); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(a6);
+        rowContainer.add(a1); rowContainer.add(new LabelComponent("A1")); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(new LabelComponent("A6")); rowContainer.add(a6);
 
         //sixth row
-        rowContainer.add(blank()); rowContainer.add(a2); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(a5); rowContainer.add(blank());
+        rowContainer.add(new LabelComponent("A2", 1)); rowContainer.add(a2); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(a5); rowContainer.add(new LabelComponent("A5", 3));
 
         //bottom row
-        rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(a3); rowContainer.add(a4); rowContainer.add(blank()); rowContainer.add(blank());
+        rowContainer.add(blank()); rowContainer.add(new LabelComponent("A3", 1)); rowContainer.add(a3); rowContainer.add(a4); rowContainer.add(new LabelComponent("A4", 3)); rowContainer.add(blank());
 
         //add the rows to the window
         this.add(rowContainer, BorderLayout.CENTER);

@@ -1,16 +1,35 @@
 import java.awt.*;
 import javax.swing.*;
 
+/**
+ * LabelComponent displays a piece of text with an invisible background.
+ */
 public class LabelComponent extends BlankComponent {
     private JLabel textHolder;
 
     /**
-     * Constructs a LabelComponent object of size 100x100.
+     * Constructs a LabelComponent object of size 100x100. Displays the text in the middle of the component.
      * 
      * @param text text to be displayed
-     * @param side true to display the text at the top of the label, false to display the text at the bottom of the label
      */
-    public LabelComponent(String text, boolean side) {
+    public LabelComponent(String text) {
+        super();
+
+        this.textHolder = new JLabel(text);
+        textHolder.setPreferredSize(new Dimension(50, 50));
+        textHolder.setFont(textHolder.getFont().deriveFont(30.0f));
+
+        this.setLayout(new GridBagLayout());
+        this.add(textHolder);
+    }
+
+    /**
+     * Constructs a LabelComponent object of size 100x100. Moves the text to the top/bottom of the label depending on the input.
+     * 
+     * @param text text to be displayed
+     * @param side 0=NORTH, 1=EAST, 2=SOUTH, 3=WEST, default=CENTER
+     */
+    public LabelComponent(String text, int side) {
         super();
 
         this.textHolder = new JLabel(text);
@@ -19,11 +38,20 @@ public class LabelComponent extends BlankComponent {
 
         this.setLayout(new BorderLayout());
         
-        if (side) {
+        if (side == 0) {
             this.add(textHolder, BorderLayout.NORTH);
         }
-        else {
+        else if (side == 1) {
+            this.add(textHolder, BorderLayout.EAST);
+        }
+        else if (side == 2) {
             this.add(textHolder, BorderLayout.SOUTH);
+        }
+        else if (side == 3) {
+            this.add(textHolder, BorderLayout.WEST);
+        }
+        else {
+            this.add(textHolder, BorderLayout.CENTER);
         }
     }
 

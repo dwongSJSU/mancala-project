@@ -4,7 +4,6 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
 import javax.swing.*;
-import javax.swing.border.Border;
 
 /**
  * MancalaDefaultView is one strategy to display the GUI for the game.
@@ -66,13 +65,13 @@ public class MancalaDefaultView extends JFrame implements ViewStrategy {
         topLabels.setLayout(new BoxLayout(topLabels, BoxLayout.X_AXIS));
 
         topLabels.add(new BlankComponent(50, 100)); //padding
-        topLabels.add(new LabelComponent("BM", false));
-        topLabels.add(new LabelComponent("B6", false));
-        topLabels.add(new LabelComponent("B5", false));
-        topLabels.add(new LabelComponent("B4", false));
-        topLabels.add(new LabelComponent("B3", false));
-        topLabels.add(new LabelComponent("B2", false));
-        topLabels.add(new LabelComponent("B1", false));
+        topLabels.add(new LabelComponent("BM", 2));
+        topLabels.add(new LabelComponent("B6", 2));
+        topLabels.add(new LabelComponent("B5", 2));
+        topLabels.add(new LabelComponent("B4", 2));
+        topLabels.add(new LabelComponent("B3", 2));
+        topLabels.add(new LabelComponent("B2", 2));
+        topLabels.add(new LabelComponent("B1", 2));
         topLabels.add(new BlankComponent());
 
         JPanel bottomLabels = new JPanel();
@@ -80,13 +79,13 @@ public class MancalaDefaultView extends JFrame implements ViewStrategy {
         bottomLabels.setLayout(new BoxLayout(bottomLabels, BoxLayout.X_AXIS));
 
         bottomLabels.add(new BlankComponent(150, 100)); //padding
-        bottomLabels.add(new LabelComponent("A1", true));
-        bottomLabels.add(new LabelComponent("A2", true));
-        bottomLabels.add(new LabelComponent("A3", true));
-        bottomLabels.add(new LabelComponent("A4", true));
-        bottomLabels.add(new LabelComponent("A5", true));
-        bottomLabels.add(new LabelComponent("A6", true));
-        bottomLabels.add(new LabelComponent("AM", true));
+        bottomLabels.add(new LabelComponent("A1", 0));
+        bottomLabels.add(new LabelComponent("A2", 0));
+        bottomLabels.add(new LabelComponent("A3", 0));
+        bottomLabels.add(new LabelComponent("A4", 0));
+        bottomLabels.add(new LabelComponent("A5", 0));
+        bottomLabels.add(new LabelComponent("A6", 0));
+        bottomLabels.add(new LabelComponent("AM", 0));
         
         JPanel board = new JPanel(new BorderLayout());
 
@@ -166,15 +165,6 @@ public class MancalaDefaultView extends JFrame implements ViewStrategy {
         addPitListener(b4, BoardSpace.B4, true);
         addPitListener(b5, BoardSpace.B5, true);
         addPitListener(b6, BoardSpace.B6, true);
-    }
-
-    /**
-     * Factory method to create an invisible pit (for spacing)
-     * 
-     * @return new BlankComponent object
-    */
-    private BlankComponent blank() {
-        return new BlankComponent();
     }
 
     /**
