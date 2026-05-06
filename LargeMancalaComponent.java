@@ -2,9 +2,9 @@ import java.awt.*;
 import javax.swing.*;
 
 /**
- * MancalaComponent is the JComponent used by the application to draw a mancala.
+ * LargeMancalaComponent is the JComponent used by the application to draw a mancala.
  */
-public class MancalaComponent extends JPanel {
+public class LargeMancalaComponent extends JPanel {
     private final int PREFERRED_WIDTH = 100;
     private final int PREFERRED_HEIGHT = 200;
 
@@ -12,12 +12,12 @@ public class MancalaComponent extends JPanel {
     private BorderShape border;
     private Color color = Color.BLACK;
 
-    public MancalaComponent() {
+    public LargeMancalaComponent() {
         this(new RectangleStoneRenderer(0), new SquareBorder());
         setPreferredSize(new Dimension(PREFERRED_WIDTH, PREFERRED_HEIGHT));
     }
 
-    public MancalaComponent(StoneRenderer stones, BorderShape border) {
+    public LargeMancalaComponent(StoneRenderer stones, BorderShape border) {
         this.stones = stones;
         this.border = border;
         setPreferredSize(new Dimension(PREFERRED_WIDTH, PREFERRED_HEIGHT));

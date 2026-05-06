@@ -2,30 +2,50 @@ import java.awt.*;
 import java.awt.geom.Ellipse2D;
 
 /**
- * EllipseStoneRenderer is a StoneRenderer that draws the stones in a sqrt(n)xsqrt(n) grid, and resizes the stones to fit in a 100x100 ellipse border.
+ * EllipseStoneRenderer is a StoneRenderer that draws the stones in a sqrt(n)xsqrt(n) grid.
+ * Drawing assumes a 100x100 ellipse border when resizing the stones. Resizing formula may not work with other dimensions.
+ * Works best when constructed with a starting x and y of 10.
  */
 public class EllipseStoneRenderer implements StoneRenderer {
     private int numStones;
     private int startX;
     private int startY;
 
+    /**
+     * Constructs an EllipseStoneRenderer object.
+     * 
+     * @param numStones number of stones to be drawn
+    */
     public EllipseStoneRenderer(int numStones) {
         this.numStones = numStones;
         this.startX = 0;
         this.startY = 0;
     }
 
+    /**
+     * Constructs an EllipseStoneRenderer object that draws stones at a specified (x, y).
+     * 
+     * @param numStones number of stones to be drawn
+     * @param startX starting x-coordinate
+     * @param startY starting y-coordinate
+    */
     public EllipseStoneRenderer(int numStones, int startX, int startY) {
         this.numStones = numStones;
         this.startX = startX;
         this.startY = startY;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setStoneCount(int numStones) {
         this.numStones = numStones;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void draw(Graphics2D g2, int width, int height) {
         if (numStones <= 0) return;

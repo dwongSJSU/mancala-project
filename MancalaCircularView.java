@@ -4,10 +4,10 @@ import javax.swing.*;
 
 /**
  * MancalaCircularView is one strategy to display the GUI for the game.
- * 
+ * Draws the stones in a circular manner, with small mancalas at the left and right edges of the circle.
  */
 public class MancalaCircularView extends JFrame implements ViewStrategy {
-    private final int FRAME_SIZE = 1000;
+    private final int FRAME_SIZE = 1000; //size of the window
 
     private MancalaLinkedList model;
 
@@ -36,6 +36,9 @@ public class MancalaCircularView extends JFrame implements ViewStrategy {
     private JLabel turnLabel = new JLabel("Player A's Turn", SwingConstants.CENTER);
     //end of GUI Components
 
+    /**
+     * Constructs a MancalaCircularView object.
+     */
     public MancalaCircularView() {
         //set size of window
         this.setSize(FRAME_SIZE, FRAME_SIZE);
@@ -139,6 +142,12 @@ public class MancalaCircularView extends JFrame implements ViewStrategy {
         });
     }
 
+    /**
+     * Attaches this MancalaCircularView object to a MancalaLinkedList model.
+     * This model is used as the source of the ongoing game's data.
+     * 
+     * @param model model where this view will be attached to
+     */
     public void attachTo(MancalaLinkedList model) {
         this.model = model;
     }
@@ -173,6 +182,9 @@ public class MancalaCircularView extends JFrame implements ViewStrategy {
         }
     }
 
+    /**
+     * Displays the game's results in a pop-up window.
+     */
     private void announceWinner() {
         int aScore = model.getStoneCount(BoardSpace.AM);
         int bScore = model.getStoneCount(BoardSpace.BM);

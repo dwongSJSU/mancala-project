@@ -11,10 +11,23 @@ public class MancalaLinkedList {
     public static BoardSpace[] aPits = {BoardSpace.A1, BoardSpace.A2, BoardSpace.A3, BoardSpace.A4, BoardSpace.A5, BoardSpace.A6, BoardSpace.AM};
     public static BoardSpace[] bPits = {BoardSpace.B1, BoardSpace.B2, BoardSpace.B3, BoardSpace.B4, BoardSpace.B5, BoardSpace.B6, BoardSpace.BM};
 
+    /**
+     * Constructs a MancalaLinkedList object.
+     * The board contains 12 pits and 2 mancalas. Each pit starts with 4 stones.
+     */
     public MancalaLinkedList() {
         defaultStoneInPit = 4;
         this.nodes = new HashMap<BoardSpace, Node>();
         initializeBoard();
+    }
+
+    /**
+     * Constructs a MancalaLinkedList object.
+     * The board has 12 pits and 2 mancalas. Each pit starts with the input number of stones.
+     */
+    public MancalaLinkedList(int startingStones) {
+        this();
+        this.defaultStoneInPit = startingStones;
     }
 
     /** 
@@ -79,11 +92,16 @@ public class MancalaLinkedList {
 
         this.currentNode = this.currentNode.getNext();
     }
+
     /**
      * Simulates the game process when the player start a move on the given boardspace.
      * Returns true if it allows the user to make another move. 
-     * Precondition: The player chose the valid boardspace and side.
+     * Precondition: The player chose a valid boardspace and side.
      * Postcondition: Board is updated.
+     * 
+     * @param space starting board space
+     * @param side false -> top (B), true -> bottom (A)
+     * @return true if the move allows the user a second move 
      */
     public boolean startMoveOn(BoardSpace space, boolean side) {
         BoardSpace myMancala = side ? BoardSpace.BM : BoardSpace.AM;
@@ -114,6 +132,8 @@ public class MancalaLinkedList {
 
     /**
      * Returns true if either side's pits are all empty, signaling game over.
+     * 
+     * @return true if the game is over, false if not
      */
     public boolean isGameOver() {
         int totalStonesInGame = 0;
@@ -142,6 +162,8 @@ public class MancalaLinkedList {
 
     /**
      * Returns a snapshot of the current stone counts for every board space.
+     * 
+     * @return a snapshot of the current game
      */
     public HashMap<BoardSpace, Integer> getSnapshot() {
         HashMap<BoardSpace, Integer> snapshot = new HashMap<>();
@@ -153,6 +175,8 @@ public class MancalaLinkedList {
 
     /**
      * Restores stone counts from a previously taken snapshot.
+     * 
+     * @param snapshot snapshot of the game to be reverted to.
      */
     public void restoreSnapshot(HashMap<BoardSpace, Integer> snapshot) {
         for (Map.Entry<BoardSpace, Integer> entry : snapshot.entrySet()) {
@@ -205,6 +229,12 @@ public class MancalaLinkedList {
         private Node next; //next node to be visited
         private int stones; //number of stones currently in this space
 
+        /**
+         * Constructs a Node object.
+         * 
+         * @param boardSpace board space represented by this node
+         * @param stones stones held by this node
+         */
         public Node(BoardSpace boardSpace, int stones) {
             this.boardSpace = boardSpace;
             this.stones = stones;
@@ -212,30 +242,65 @@ public class MancalaLinkedList {
             this.next = null;
         }
 
+        /**
+         * Sets the number of stones in this node
+         * 
+         * @param stones new number of stones
+         */
         public void setStones(int stones) {
             this.stones = stones;
         }
 
+        /**
+         * Sets the 'opposite' node of this node. Used for the "steal" rule.
+         * 
+         * @param opposite opposite node
+         */
         public void setOpposite(Node opposite) {
             this.opposite = opposite;
         }
 
+        /**
+         * Sets the next node to be traversed in the MancalaLinkedList.
+         * 
+         * @param next next node
+         */
         public void setNext(Node next) {
             this.next = next;
         }
 
+        /**
+         * Returns the number of stones this node holds.
+         * 
+         * @return number of stones held by this node
+         */
         public int getStones() {
             return this.stones;
         }
 
+        /**
+         * Returns the opposite node of this node.
+         * 
+         * @return opposite node
+         */
         public Node getOpposite() {
             return this.opposite;
         }
 
+        /**
+         * Returns the next node in the MancalaLinkedList.
+         * 
+         * @return next node
+         */
         public Node getNext() {
             return this.next;
         }
 
+        /**
+         * Returns the BoardSpace enum represented by this node.
+         * 
+         * @return BoardSpace enum represented by this node
+         */
         public BoardSpace getBoardSpace() {
             return this.boardSpace;
         }

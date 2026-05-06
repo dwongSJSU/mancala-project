@@ -1,6 +1,9 @@
 import java.util.Scanner;
 import java.util.Set;
 
+/**
+ * Player represents one of the players playing the Mancala game.
+ */
 public class Player {
     private String name;
     private boolean side; // false -> top, true -> bottom.
@@ -8,12 +11,25 @@ public class Player {
     private static final Set<String> BOTTOM_SPACES = Set.of("B1", "B2", "B3", "B4", "B5", "B6");
     private MancalaLinkedList mancalaboard;
 
+    /**
+     * Constructs a Player object.
+     * 
+     * @param name name of the player
+     * @param side the side that the player is on
+     * @param mancalaboard the game board to be used by this player
+     */
     public Player(String name, boolean side, MancalaLinkedList mancalaboard) {
         this.name = name;
         this.side = side;
         this.mancalaboard = mancalaboard;
     }
 
+    /**
+     * Simulates a move made by this player.
+     * Will recursively call itself if the player gets another turn.
+     * 
+     * @param scanner Scanner object that reads the user's turn input
+     */
     public void makeMove(Scanner scanner) {
         Set<String> validSpaces = side ? BOTTOM_SPACES : TOP_SPACES;
         String prefix = side ? "B" : "A";

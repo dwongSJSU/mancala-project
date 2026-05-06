@@ -10,7 +10,7 @@ import javax.swing.*;
  * It provides the most basic GUI for the game and only uses black and white coloring.
  */
 public class MancalaDefaultView extends JFrame implements ViewStrategy {
-    private final int FRAME_SIZE = 1000;
+    private final int FRAME_SIZE = 1000; //size of the window
 
     private MancalaLinkedList model;
 
@@ -44,8 +44,8 @@ public class MancalaDefaultView extends JFrame implements ViewStrategy {
     private PitComponent b5 = new PitComponent();
     private PitComponent b6 = new PitComponent();
 
-    private MancalaComponent aM = new MancalaComponent();
-    private MancalaComponent bM = new MancalaComponent();
+    private LargeMancalaComponent aM = new LargeMancalaComponent();
+    private LargeMancalaComponent bM = new LargeMancalaComponent();
 
     private JLabel turnLabel = new JLabel("Player A's Turn", SwingConstants.CENTER);
     //end of GUI Components
@@ -174,6 +174,12 @@ public class MancalaDefaultView extends JFrame implements ViewStrategy {
         });
     }
 
+    /**
+     * Attaches this MancalaDefaultView object to a MancalaLinkedList model.
+     * This model is used as the source of the ongoing game's data.
+     * 
+     * @param model model where this view will be attached to
+     */
     public void attachTo(MancalaLinkedList model) {
         this.model = model;
     }
@@ -209,6 +215,9 @@ public class MancalaDefaultView extends JFrame implements ViewStrategy {
         }
     }
 
+    /**
+     * Displays the game's results in a pop-up window.
+     */
     private void announceWinner() {
         int aScore = model.getStoneCount(BoardSpace.AM);
         int bScore = model.getStoneCount(BoardSpace.BM);

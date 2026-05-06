@@ -20,16 +20,30 @@ public class PitComponent extends JPanel {
         setPreferredSize(new Dimension(PREFERRED_SIZE, PREFERRED_SIZE));
     }
 
+    /**
+     * Constructs a PitComponent object with the given specifications.
+     * 
+     * @param stones StoneRenderer object that draws the stones
+     * @param border BorderShape object that draws the outline of this pit
+     */
     public PitComponent(StoneRenderer stones, BorderShape border) {
         this.stones = stones;
         this.border = border;
         setPreferredSize(new Dimension(PREFERRED_SIZE, PREFERRED_SIZE));
     }
 
+    /**
+     * Sets the color to draw this pit in.
+     * 
+     * @param color color to use
+     */
     public void setColor(Color color) {
         this.color = color;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -41,6 +55,11 @@ public class PitComponent extends JPanel {
         border.draw(g2, getWidth(), getHeight(), color);
     }
 
+    /**
+     * Updates the number of stones to be drawn by this PitComponent.
+     * 
+     * @param numStones new number of stones
+     */
     public void updateCount(int numStones) {
         stones.setStoneCount(numStones);
         repaint();
