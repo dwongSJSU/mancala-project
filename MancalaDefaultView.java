@@ -4,13 +4,15 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
 import javax.swing.*;
+import javax.swing.border.Border;
 
 /**
  * MancalaDefaultView is one strategy to display the GUI for the game.
  * It provides the most basic GUI for the game and only uses black and white coloring.
  */
 public class MancalaDefaultView extends JFrame implements ViewStrategy {
-    private final int FRAME_SIZE = 1000; //size of the window
+    private final int FRAME_SIZE = 1500; //size of the window
+    private final int CONTAINER_SIZE = 1000;
 
     private MancalaLinkedList model;
 
@@ -52,8 +54,39 @@ public class MancalaDefaultView extends JFrame implements ViewStrategy {
 
     public MancalaDefaultView() {
         //set size of window
-        this.setSize(FRAME_SIZE, FRAME_SIZE);
+        this.setSize(CONTAINER_SIZE, CONTAINER_SIZE);
         this.setLayout(new BorderLayout());
+
+        JPanel gameContainer = new JPanel();
+        gameContainer.setSize(FRAME_SIZE, FRAME_SIZE);
+        gameContainer.setLayout(new BorderLayout());
+
+        JPanel topLabels = new JPanel();
+        topLabels.setSize(CONTAINER_SIZE, CONTAINER_SIZE-FRAME_SIZE);
+        topLabels.setLayout(new BoxLayout(topLabels, BoxLayout.X_AXIS));
+
+        topLabels.add(new BlankComponent(50, 100)); //padding
+        topLabels.add(new LabelComponent("BM", false));
+        topLabels.add(new LabelComponent("B6", false));
+        topLabels.add(new LabelComponent("B5", false));
+        topLabels.add(new LabelComponent("B4", false));
+        topLabels.add(new LabelComponent("B3", false));
+        topLabels.add(new LabelComponent("B2", false));
+        topLabels.add(new LabelComponent("B1", false));
+        topLabels.add(new BlankComponent());
+
+        JPanel bottomLabels = new JPanel();
+        bottomLabels.setSize(CONTAINER_SIZE, CONTAINER_SIZE-FRAME_SIZE);
+        bottomLabels.setLayout(new BoxLayout(bottomLabels, BoxLayout.X_AXIS));
+
+        bottomLabels.add(new BlankComponent(150, 100)); //padding
+        bottomLabels.add(new LabelComponent("A1", true));
+        bottomLabels.add(new LabelComponent("A2", true));
+        bottomLabels.add(new LabelComponent("A3", true));
+        bottomLabels.add(new LabelComponent("A4", true));
+        bottomLabels.add(new LabelComponent("A5", true));
+        bottomLabels.add(new LabelComponent("A6", true));
+        bottomLabels.add(new LabelComponent("AM", true));
         
         JPanel board = new JPanel(new BorderLayout());
 
@@ -92,20 +125,21 @@ public class MancalaDefaultView extends JFrame implements ViewStrategy {
 
         //add board to the window
         board.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        this.add(board);
+        gameContainer.add(board, BorderLayout.CENTER);
+        gameContainer.add(topLabels, BorderLayout.NORTH);
+        gameContainer.add(bottomLabels, BorderLayout.SOUTH);
 
         //add turn indicator and undo button at the bottom
         turnLabel.setFont(turnLabel.getFont().deriveFont(Font.BOLD, 18f));
         JPanel bottomPanel = new JPanel(new BorderLayout());
         bottomPanel.add(turnLabel, BorderLayout.CENTER);
         bottomPanel.add(undoButton, BorderLayout.EAST);
-        this.add(bottomPanel, BorderLayout.SOUTH);
 
         undoButton.addActionListener(e -> {
             if (undoStack.isEmpty() || gameOver) return;
             int playerIndex = currentSide ? 1 : 0;
             if (undosLeft[playerIndex] == 0) {
-                JOptionPane.showMessageDialog(this, (currentSide ? "Player B" : "Player A") + " has no undos left.", "Undo Unavailable", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(gameContainer, (currentSide ? "Player B" : "Player A") + " has no undos left.", "Undo Unavailable", JOptionPane.WARNING_MESSAGE);
                 return;
             }
             undosLeft[playerIndex]--;
@@ -114,6 +148,9 @@ public class MancalaDefaultView extends JFrame implements ViewStrategy {
             currentSide = prev.side();
             stateChanged();
         });
+
+        this.add(gameContainer, BorderLayout.CENTER);
+        this.add(bottomPanel, BorderLayout.SOUTH);
 
         // wire up click listeners for every pit
         addPitListener(a1, BoardSpace.A1, false);
@@ -129,6 +166,15 @@ public class MancalaDefaultView extends JFrame implements ViewStrategy {
         addPitListener(b4, BoardSpace.B4, true);
         addPitListener(b5, BoardSpace.B5, true);
         addPitListener(b6, BoardSpace.B6, true);
+    }
+
+    /**
+     * Factory method to create an invisible pit (for spacing)
+     * 
+     * @return new BlankComponent object
+    */
+    private BlankComponent blank() {
+        return new BlankComponent();
     }
 
     /**
