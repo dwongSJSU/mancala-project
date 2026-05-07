@@ -22,6 +22,9 @@ public class MancalaDefaultView extends AbstractMancalaView {
     private LargeMancalaComponent aM = new LargeMancalaComponent();
     private LargeMancalaComponent bM = new LargeMancalaComponent();
 
+    /**
+     * Constructs a MancalaDefaultView object
+     */
     public MancalaDefaultView() {
         super();
         this.setSize(CONTAINER_SIZE, CONTAINER_SIZE);
@@ -106,11 +109,17 @@ public class MancalaDefaultView extends AbstractMancalaView {
         setVisible(true);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void updateAMancalaDisplay(int count) {
         aM.updateCount(count);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void updateBMancalaDisplay(int count) {
         bM.updateCount(count);

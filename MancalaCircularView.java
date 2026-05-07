@@ -21,6 +21,9 @@ public class MancalaCircularView extends AbstractMancalaView {
     private PitComponent aM = new PitComponent(new RectangleStoneRenderer(0), new SquareBorder());
     private PitComponent bM = new PitComponent(new RectangleStoneRenderer(0), new SquareBorder());
 
+    /**
+     * Constructs a MancalaCircularView object
+     */
     public MancalaCircularView() {
         super();
         this.setSize(FRAME_SIZE, FRAME_SIZE);
@@ -63,15 +66,26 @@ public class MancalaCircularView extends AbstractMancalaView {
         setVisible(true);
     }
 
+    /**
+     * Factory method which creates a default BlankComponent object.
+     * 
+     * @return newly constructed BlankComponent
+     */
     private BlankComponent blank() {
         return new BlankComponent();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void updateAMancalaDisplay(int count) {
         aM.updateCount(count);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void updateBMancalaDisplay(int count) {
         bM.updateCount(count);

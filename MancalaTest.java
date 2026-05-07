@@ -4,6 +4,7 @@
  * @author Dylan Wong
  */
 
+import javax.swing.*;
 import java.util.Scanner;
 
 /**
@@ -36,7 +37,7 @@ public class MancalaTest {
 
         MancalaLinkedList model = new MancalaLinkedList(numStones);
         
-        ViewStrategy view;
+        AbstractMancalaView view;
         if (viewChoice.equals("d")) {
             view = new MancalaDefaultView();
         }
@@ -50,5 +51,8 @@ public class MancalaTest {
         //MancalaCircularView view = new MancalaCircularView();
         view.attachTo(model);
         view.stateChanged(); // display the real initial board state
+        view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        view.pack();
+        view.setVisible(true);
     }
 }

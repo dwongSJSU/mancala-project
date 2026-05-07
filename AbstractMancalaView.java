@@ -47,6 +47,9 @@ public abstract class AbstractMancalaView extends JFrame implements ViewStrategy
 
     protected JLabel turnLabel = new JLabel("Player A's Turn", SwingConstants.CENTER);
 
+    /**
+     * Intializes the undo button and attaches listeners to each pit.
+     */
     protected AbstractMancalaView() {
         undoButton.setEnabled(false);
         undoButton.addActionListener(e -> {
@@ -117,11 +120,19 @@ public abstract class AbstractMancalaView extends JFrame implements ViewStrategy
         });
     }
 
+    /**
+     * Attaches this view to a model object.
+     * 
+     * @param model model to read data from
+     */
     @Override
     public void attachTo(MancalaLinkedList model) {
         this.model = model;
     }
 
+    /**
+     * Updates stone counts and redraws the board.
+     */
     @Override
     public void stateChanged() {
         a1.updateCount(model.getStoneCount(BoardSpace.A1));
@@ -160,15 +171,22 @@ public abstract class AbstractMancalaView extends JFrame implements ViewStrategy
     /**
      * Push the latest A-mancala stone count to whatever widget the subclass
      * uses to display it.
+     * 
+     * @param count new number of stones
      */
     protected abstract void updateAMancalaDisplay(int count);
 
     /**
      * Push the latest B-mancala stone count to whatever widget the subclass
      * uses to display it.
+     * 
+     * @param count new number of stones
      */
     protected abstract void updateBMancalaDisplay(int count);
 
+    /**
+     * Announces the winner of the game in a pop-up window.
+     */
     private void announceWinner() {
         int aScore = model.getStoneCount(BoardSpace.AM);
         int bScore = model.getStoneCount(BoardSpace.BM);
