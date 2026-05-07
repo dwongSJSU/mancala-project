@@ -44,7 +44,7 @@ public class MancalaTest {
             view = new MancalaCircularView();
         }
 
-        view.attachTo(model);
-        view.stateChanged(); // display the real initial board state
+        ViewWrapper gameGUI = new ViewWrapper();
+        gameGUI.draw(model, view);
     }
 }
