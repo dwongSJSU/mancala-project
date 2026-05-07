@@ -147,11 +147,12 @@ public class MancalaLinkedList {
      * @return true if the game is over, false if not
      */
     public boolean isGameOver() {
-        int totalStonesInGame = 0;
+        int totalAstones = 0, totalBstones = 0;
         for(int i = 0; i < aPits.length - 1; i++) {
-            totalStonesInGame += getStoneCount(aPits[i]) + getStoneCount(bPits[i]);
+            totalAstones += getStoneCount(aPits[i]);
+            totalBstones += getStoneCount(bPits[i]);
         }
-        return totalStonesInGame == 0;
+        return totalAstones == 0 || totalBstones == 0;
     }
 
     /**
@@ -159,15 +160,18 @@ public class MancalaLinkedList {
      * Called once isGameOver() returns true.
      */
     public void sweepRemainingStones() {
-        for (BoardSpace pit : aPits) {
-            Node node = nodes.get(pit);
-            nodes.get(BoardSpace.AM).setStones(nodes.get(BoardSpace.AM).getStones() + node.getStones());
-            node.setStones(0);
-        }
-        for (BoardSpace pit : bPits) {
-            Node node = nodes.get(pit);
-            nodes.get(BoardSpace.BM).setStones(nodes.get(BoardSpace.BM).getStones() + node.getStones());
-            node.setStones(0);
+        // The last entry of aPits/bPits is the mancala itself; skip it so we
+        // don't overwrite its accumulated stones with zero.
+        Node aMancala = nodes.get(BoardSpace.AM);
+        Node bMancala = nodes.get(BoardSpace.BM);
+        for (int i = 0; i < aPits.length - 1; i++) {
+            Node aNode = nodes.get(aPits[i]);
+            aMancala.setStones(aMancala.getStones() + aNode.getStones());
+            aNode.setStones(0);
+
+            Node bNode = nodes.get(bPits[i]);
+            bMancala.setStones(bMancala.getStones() + bNode.getStones());
+            bNode.setStones(0);
         }
     }
 

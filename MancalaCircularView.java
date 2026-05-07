@@ -10,6 +10,7 @@
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.HashMap;
 import javax.swing.*;
 
 /**
@@ -24,6 +25,12 @@ public class MancalaCircularView extends JFrame implements ViewStrategy {
     // false = Player A's turn (pits A1-A6), true = Player B's turn (pits B1-B6)
     private boolean currentSide = false;
     private boolean gameOver = false;
+
+    private static final int MAX_UNDOS = 3;
+    private record BoardState(HashMap<BoardSpace, Integer> stones, boolean side) {}
+    private BoardState previousState = null;
+    private int[] undosLeft = {MAX_UNDOS, MAX_UNDOS}; // [A, B]
+    private JButton undoButton = new JButton("Undo (A: 3)");
 
     //start of GUI Components
     private PitComponent a1 = new PitComponent();
@@ -83,9 +90,27 @@ public class MancalaCircularView extends JFrame implements ViewStrategy {
         //add the rows to the window
         this.add(rowContainer, BorderLayout.CENTER);
 
-        //add turn indicator at the bottom
+        //add turn indicator and undo button at the bottom
         turnLabel.setFont(turnLabel.getFont().deriveFont(Font.BOLD, 18f));
-        this.add(turnLabel, BorderLayout.SOUTH);
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.add(turnLabel, BorderLayout.CENTER);
+        bottomPanel.add(undoButton, BorderLayout.EAST);
+        this.add(bottomPanel, BorderLayout.SOUTH);
+
+        undoButton.setEnabled(false);
+        undoButton.addActionListener(e -> {
+            if (previousState == null || gameOver) return;
+            // The undo charges the player whose move is being reverted, not
+            // necessarily the player whose turn it currently is (the side may
+            // have switched after the move).
+            int chargedIndex = previousState.side() ? 1 : 0;
+            if (undosLeft[chargedIndex] == 0) return;
+            undosLeft[chargedIndex]--;
+            model.restoreSnapshot(previousState.stones());
+            currentSide = previousState.side();
+            previousState = null;
+            stateChanged();
+        });
 
         // wire up click listeners for every pit
         addPitListener(a1, BoardSpace.A1, false);
@@ -136,11 +161,16 @@ public class MancalaCircularView extends JFrame implements ViewStrategy {
                 // ignore clicks on empty pits
                 if (model.getStoneCount(space) == 0) return;
 
+                previousState = new BoardState(model.getSnapshot(), currentSide);
                 boolean extraTurn = model.startMoveOn(space, currentSide);
 
                 // switch sides only if no extra turn was earned
                 if (!extraTurn) {
                     currentSide = !currentSide;
+                    // The new player's turn starts with a fresh undo
+                    // allowance. previousState is intentionally kept so the
+                    // last move can still be undone across the turn boundary.
+                    undosLeft[currentSide ? 1 : 0] = MAX_UNDOS;
                 }
 
                 if (model.isGameOver()) {
@@ -188,6 +218,15 @@ public class MancalaCircularView extends JFrame implements ViewStrategy {
 
         aM.updateCount(model.getStoneCount(BoardSpace.AM));
         bM.updateCount(model.getStoneCount(BoardSpace.BM));
+
+        // Show the player whose move would be reverted (the last-action
+        // player) and their remaining undo chances. When there is no move
+        // to undo yet, fall back to the player whose turn it currently is.
+        boolean labelSide = previousState != null ? previousState.side() : currentSide;
+        int labelIndex = labelSide ? 1 : 0;
+        String labelName = labelSide ? "B" : "A";
+        undoButton.setText("Undo (" + labelName + ": " + undosLeft[labelIndex] + ")");
+        undoButton.setEnabled(!gameOver && previousState != null && undosLeft[labelIndex] > 0);
 
         if (gameOver) {
             turnLabel.setText("Game Over");
