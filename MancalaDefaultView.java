@@ -10,8 +10,6 @@
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.HashMap;
 import javax.swing.*;
 
@@ -31,9 +29,9 @@ public class MancalaDefaultView extends JFrame implements ViewStrategy {
 
     private static final int MAX_UNDOS = 3;
     private record BoardState(HashMap<BoardSpace, Integer> stones, boolean side) {}
-    private final Deque<BoardState> undoStack = new ArrayDeque<>();
+    private BoardState previousState = null;
     private int[] undosLeft = {MAX_UNDOS, MAX_UNDOS}; // [A, B]
-    private JButton undoButton = new JButton("Undo (A: 3, B: 3)");
+    private JButton undoButton = new JButton("Undo (A: 3)");
 
     
     //start of GUI Components
@@ -144,17 +142,18 @@ public class MancalaDefaultView extends JFrame implements ViewStrategy {
         bottomPanel.add(turnLabel, BorderLayout.CENTER);
         bottomPanel.add(undoButton, BorderLayout.EAST);
 
+        undoButton.setEnabled(false);
         undoButton.addActionListener(e -> {
-            if (undoStack.isEmpty() || gameOver) return;
-            int playerIndex = currentSide ? 1 : 0;
-            if (undosLeft[playerIndex] == 0) {
-                JOptionPane.showMessageDialog(gameContainer, (currentSide ? "Player B" : "Player A") + " has no undos left.", "Undo Unavailable", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-            undosLeft[playerIndex]--;
-            BoardState prev = undoStack.pop();
-            model.restoreSnapshot(prev.stones());
-            currentSide = prev.side();
+            if (previousState == null || gameOver) return;
+            // The undo charges the player whose move is being reverted, not
+            // necessarily the player whose turn it currently is (the side may
+            // have switched after the move).
+            int chargedIndex = previousState.side() ? 1 : 0;
+            if (undosLeft[chargedIndex] == 0) return;
+            undosLeft[chargedIndex]--;
+            model.restoreSnapshot(previousState.stones());
+            currentSide = previousState.side();
+            previousState = null;
             stateChanged();
         });
 
@@ -201,14 +200,16 @@ public class MancalaDefaultView extends JFrame implements ViewStrategy {
                 // ignore clicks on empty pits
                 if (model.getStoneCount(space) == 0) return;
                 
-                undoButton.setEnabled(!undoStack.isEmpty());
-                undoStack.push(new BoardState(model.getSnapshot(), currentSide));
+                previousState = new BoardState(model.getSnapshot(), currentSide);
                 boolean extraTurn = model.startMoveOn(space, currentSide);
 
                 // switch sides only if no extra turn was earned
                 if (!extraTurn) {
                     currentSide = !currentSide;
-                    undoButton.setEnabled(false);
+                    // The new player's turn starts with a fresh undo
+                    // allowance. previousState is intentionally kept so the
+                    // last move can still be undone across the turn boundary.
+                    undosLeft[currentSide ? 1 : 0] = MAX_UNDOS;
                 }
 
                 if (model.isGameOver()) {
@@ -257,7 +258,16 @@ public class MancalaDefaultView extends JFrame implements ViewStrategy {
         aM.updateCount(model.getStoneCount(BoardSpace.AM));
         bM.updateCount(model.getStoneCount(BoardSpace.BM));
 
-        undoButton.setText("Undo (A: " + undosLeft[0] + ", B: " + undosLeft[1] + ")");
+        // Show the player whose move would be reverted (the last-action
+        // player) and their remaining undo chances. When there is no move
+        // to undo yet, fall back to the player whose turn it currently is.
+        boolean labelSide = previousState != null ? previousState.side() : currentSide;
+        int labelIndex = labelSide ? 1 : 0;
+        String labelName = labelSide ? "B" : "A";
+        undoButton.setText("Undo (" + labelName + ": " + undosLeft[labelIndex] + ")");
+        // Enabled unless the game just started / nothing to undo, the game
+        // has finished, or the last-action player has run out of chances.
+        undoButton.setEnabled(!gameOver && previousState != null && undosLeft[labelIndex] > 0);
         if (gameOver) {
             turnLabel.setText("Game Over");
         } else {
