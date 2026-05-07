@@ -1,6 +1,5 @@
 import java.awt.*;
 import javax.swing.*;
-import javax.swing.border.Border;
 
 /**
  * LabelComponent displays a piece of text with an invisible background.
