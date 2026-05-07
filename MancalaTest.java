@@ -10,6 +10,11 @@ import javax.swing.*;
  * The MancalaTest class contains the main method to run the program.
  */
 public class MancalaTest {
+    /**
+     * Runs the program.
+     * 
+     * @param args input arguments
+     */
     public static void main(String[] args) {
         Object[] stoneOptions = {"4 stones", "3 stones"};
         String message = "Choose how many stones should start in each pit:";

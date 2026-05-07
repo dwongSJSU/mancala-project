@@ -18,22 +18,39 @@ public class LargeMancalaComponent extends JPanel {
     private BorderShape border;
     private Color color = Color.BLACK;
 
+    /**
+     * Constructs a LargeMancalaComponent object
+     */
     public LargeMancalaComponent() {
         this(new RectangleStoneRenderer(0), new SquareBorder());
         setPreferredSize(new Dimension(PREFERRED_WIDTH, PREFERRED_HEIGHT));
     }
 
+    /**
+     * Constructs a LargeMancalaComponent object with the given specifications.
+     * 
+     * @param stones number of stones in this mancala
+     * @param border shape of the border of this mancala
+     */
     public LargeMancalaComponent(StoneRenderer stones, BorderShape border) {
         this.stones = stones;
         this.border = border;
         setPreferredSize(new Dimension(PREFERRED_WIDTH, PREFERRED_HEIGHT));
     }
 
+    /**
+     * Updates the count of stones in this mancala.
+     * 
+     * @param numStones new number of stones
+     */
     public void updateCount(int numStones) {
         stones.setStoneCount(numStones);
         repaint();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
