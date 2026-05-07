@@ -5,54 +5,46 @@
  */
 
 import javax.swing.*;
-import java.util.Scanner;
 
 /**
  * The MancalaTest class contains the main method to run the program.
  */
 public class MancalaTest {
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
+        Object[] stoneOptions = {"4 stones", "3 stones"};
+        String message = "Choose how many stones should start in each pit:";
+        String title = "Game Setup";
+        int stoneChoice = JOptionPane.showOptionDialog(null, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, stoneOptions, stoneOptions[0]);
+        if (stoneChoice == JOptionPane.CLOSED_OPTION) {
+            return;
+        }
 
-        int numStones = 0;
-        do {
-            try {
-                System.out.println("Enter starting number of stones (3 or 4): ");
-                numStones = sc.nextInt();
-            }
-            catch (Exception e) {
-                //consume invalid input
-                sc.nextLine();
-            }
-        } while (numStones != 3 && numStones != 4);
-        sc.nextLine(); //consume remaining newline in the buffer
+        int numStones;
+        if (stoneChoice == 0) { //button 0: 4 stones
+            numStones = 4;
+        }
+        else { //button 1: 3 stones
+            numStones = 3;
+        }
 
-        String viewChoice = "";
-        do {
-            System.out.println("Enter how you would like the board to be displayed: Default (d) or Circular (c): ");
-            viewChoice = sc.nextLine().strip().toLowerCase();
-        } while (!viewChoice.equals("d") && !viewChoice.equals("c"));
-
-        sc.close();
+        Object[] viewOptions = {"Default", "Circular"};
+        message = "Choose board display:";
+        int viewChoice = JOptionPane.showOptionDialog(null, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, viewOptions, viewOptions[0]);
+        if (viewChoice == JOptionPane.CLOSED_OPTION) {
+            return;
+        }
 
         MancalaLinkedList model = new MancalaLinkedList(numStones);
         
-        AbstractMancalaView view;
-        if (viewChoice.equals("d")) {
+        ViewStrategy view;
+        if (viewChoice == 0) { //button 0: Default
             view = new MancalaDefaultView();
         }
-        else if (viewChoice.equals("c")) {
+        else { //button 1: circular
             view = new MancalaCircularView();
         }
-        else {
-            throw new IllegalStateException("The user's choice for the game display (view) is illegal.");
-        }
 
-        //MancalaCircularView view = new MancalaCircularView();
         view.attachTo(model);
         view.stateChanged(); // display the real initial board state
-        view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        view.pack();
-        view.setVisible(true);
     }
 }
