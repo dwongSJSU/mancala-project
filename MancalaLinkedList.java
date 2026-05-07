@@ -26,8 +26,9 @@ public class MancalaLinkedList {
      * The board has 12 pits and 2 mancalas. Each pit starts with the input number of stones.
      */
     public MancalaLinkedList(int startingStones) {
-        this();
         this.defaultStoneInPit = startingStones;
+        this.nodes = new HashMap<BoardSpace, Node>();
+        initializeBoard();
     }
 
     /** 

@@ -50,25 +50,25 @@ public class MancalaCircularView extends JFrame implements ViewStrategy {
         rowContainer.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         //top row
-        rowContainer.add(blank()); rowContainer.add(new LabelComponent("B4", 1)); rowContainer.add(b4); rowContainer.add(b3); rowContainer.add(new LabelComponent("B3", 3)); rowContainer.add(blank());
+        rowContainer.add(blank()); rowContainer.add(new LabelComponent("B4", BorderLayout.EAST)); rowContainer.add(b4); rowContainer.add(b3); rowContainer.add(new LabelComponent("B3", BorderLayout.WEST)); rowContainer.add(blank());
 
         //second row
-        rowContainer.add(new LabelComponent("B5", 1)); rowContainer.add(b5); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(b2); rowContainer.add(new LabelComponent("B2", 3));
+        rowContainer.add(new LabelComponent("B5", BorderLayout.EAST)); rowContainer.add(b5); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(b2); rowContainer.add(new LabelComponent("B2", BorderLayout.WEST));
 
         //third row
-        rowContainer.add(b6); rowContainer.add(new LabelComponent("B6")); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(new LabelComponent("B1")); rowContainer.add(b1);
+        rowContainer.add(b6); rowContainer.add(new LabelComponent("B6", BorderLayout.WEST)); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(new LabelComponent("B1", BorderLayout.EAST)); rowContainer.add(b1);
 
         //mancala row
-        rowContainer.add(bM); rowContainer.add(new LabelComponent("BM", 3)); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(new LabelComponent("AM", 1)); rowContainer.add(aM);
+        rowContainer.add(bM); rowContainer.add(new LabelComponent("BM", BorderLayout.WEST)); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(new LabelComponent("AM", BorderLayout.EAST)); rowContainer.add(aM);
 
         //fifth row
-        rowContainer.add(a1); rowContainer.add(new LabelComponent("A1")); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(new LabelComponent("A6")); rowContainer.add(a6);
+        rowContainer.add(a1); rowContainer.add(new LabelComponent("A1", BorderLayout.WEST)); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(new LabelComponent("A6", BorderLayout.EAST)); rowContainer.add(a6);
 
         //sixth row
-        rowContainer.add(new LabelComponent("A2", 1)); rowContainer.add(a2); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(a5); rowContainer.add(new LabelComponent("A5", 3));
+        rowContainer.add(new LabelComponent("A2", BorderLayout.EAST)); rowContainer.add(a2); rowContainer.add(blank()); rowContainer.add(blank()); rowContainer.add(a5); rowContainer.add(new LabelComponent("A5", BorderLayout.WEST));
 
         //bottom row
-        rowContainer.add(blank()); rowContainer.add(new LabelComponent("A3", 1)); rowContainer.add(a3); rowContainer.add(a4); rowContainer.add(new LabelComponent("A4", 3)); rowContainer.add(blank());
+        rowContainer.add(blank()); rowContainer.add(new LabelComponent("A3", BorderLayout.EAST)); rowContainer.add(a3); rowContainer.add(a4); rowContainer.add(new LabelComponent("A4", BorderLayout.WEST)); rowContainer.add(blank());
 
         //add the rows to the window
         this.add(rowContainer, BorderLayout.CENTER);
@@ -91,6 +91,10 @@ public class MancalaCircularView extends JFrame implements ViewStrategy {
         addPitListener(b4, BoardSpace.B4, true);
         addPitListener(b5, BoardSpace.B5, true);
         addPitListener(b6, BoardSpace.B6, true);
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        pack();
+        setVisible(true);
     }
 
     /**

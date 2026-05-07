@@ -1,5 +1,6 @@
 import java.awt.*;
 import javax.swing.*;
+import javax.swing.border.Border;
 
 /**
  * LabelComponent displays a piece of text with an invisible background.
@@ -27,9 +28,9 @@ public class LabelComponent extends BlankComponent {
      * Constructs a LabelComponent object of size 100x100. Moves the text to the top/bottom of the label depending on the input.
      * 
      * @param text text to be displayed
-     * @param side 0=NORTH, 1=EAST, 2=SOUTH, 3=WEST, default=CENTER
+     * @param side BorderLayout direction
      */
-    public LabelComponent(String text, int side) {
+    public LabelComponent(String text, String side) {
         super();
 
         this.textHolder = new JLabel(text);
@@ -38,16 +39,16 @@ public class LabelComponent extends BlankComponent {
 
         this.setLayout(new BorderLayout());
         
-        if (side == 0) {
+        if (side.equals(BorderLayout.NORTH)) {
             this.add(textHolder, BorderLayout.NORTH);
         }
-        else if (side == 1) {
+        else if (side.equals(BorderLayout.EAST)) {
             this.add(textHolder, BorderLayout.EAST);
         }
-        else if (side == 2) {
+        else if (side.equals(BorderLayout.SOUTH)) {
             this.add(textHolder, BorderLayout.SOUTH);
         }
-        else if (side == 3) {
+        else if (side.equals(BorderLayout.WEST)) {
             this.add(textHolder, BorderLayout.WEST);
         }
         else {
