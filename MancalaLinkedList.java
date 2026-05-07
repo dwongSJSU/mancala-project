@@ -1,3 +1,13 @@
+/**
+ * Mancala Assignment Solution
+ *
+ * @author Dylan Wong
+ * (base design)
+ * 
+ * @author Amarjargal Ayurzana
+ * (code refactoring + startMoveOn, sweepStones, snapshot-related functionality)
+ */
+
 import java.util.HashMap;
 import java.util.Map;
 

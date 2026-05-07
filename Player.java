@@ -1,3 +1,9 @@
+/**
+ * Mancala Assignment Solution
+ *
+ * @author Amarjargal Ayurzana
+ */
+
 import java.util.Scanner;
 import java.util.Set;
 

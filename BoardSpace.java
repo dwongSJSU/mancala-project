@@ -1,4 +1,10 @@
 /**
+ * Mancala Assignment Solution
+ *
+ * @author Dylan Wong
+ */
+
+/**
  * BoardSpace is an enum type representing the spaces on the mancala board. There exists 14 total spaces: A1-A6, B1-B6, and the two mancalas AM and BM.
  */
 public enum BoardSpace {

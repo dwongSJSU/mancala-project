@@ -1,8 +1,12 @@
 /**
- * ViewStrategy is the interface used as part of the Strategy pattern for displaying the application.
- * Defines the behavior that all concrete view strategies must implement.
+ * Mancala Assignment Solution
  *
  * @author Brandon Phan 1.0
+ */
+
+/**
+ * ViewStrategy is the interface used as part of the Strategy pattern for displaying the application.
+ * Defines the behavior that all concrete view strategies must implement.
  */
 public interface ViewStrategy {
 

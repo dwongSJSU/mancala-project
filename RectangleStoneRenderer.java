@@ -1,3 +1,9 @@
+/**
+ * Mancala Assignment Solution
+ *
+ * @author Dylan Wong
+ */
+
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 

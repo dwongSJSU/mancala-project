@@ -1,3 +1,13 @@
+/**
+ * Mancala Assignment Solution
+ *
+ * @author Dylan Wong
+ * (GUI design)
+ * 
+ * @author Amarjargal Ayurzana
+ * (Game Functionality: listeners, undo button + panel, announce winner)
+ */
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
